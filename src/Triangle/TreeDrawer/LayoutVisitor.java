@@ -42,6 +42,7 @@ import Triangle.AbstractSyntaxTrees.FuncActualParameter;
 import Triangle.AbstractSyntaxTrees.FuncDeclaration;
 import Triangle.AbstractSyntaxTrees.FuncFormalParameter;
 import Triangle.AbstractSyntaxTrees.Identifier;
+import Triangle.AbstractSyntaxTrees.LongIdentifier;
 import Triangle.AbstractSyntaxTrees.IfCommand;
 import Triangle.AbstractSyntaxTrees.IfExpression;
 import Triangle.AbstractSyntaxTrees.IntTypeDenoter;
@@ -79,6 +80,7 @@ import Triangle.AbstractSyntaxTrees.VarDeclaration;
 import Triangle.AbstractSyntaxTrees.VarFormalParameter;
 import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
+import Triangle.AbstractSyntaxTrees.UntilCommand;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
 
 public class LayoutVisitor implements Visitor {
@@ -117,6 +119,10 @@ public class LayoutVisitor implements Visitor {
     return layoutBinary("Seq.Com.", ast.C1, ast.C2);
   }
 
+  public Object visitUntilCommand(UntilCommand ast, Object obj) {
+    return layoutBinary("UntilCom.", ast.E, ast.C);
+  }
+  
   public Object visitWhileCommand(WhileCommand ast, Object obj) {
     return layoutBinary("WhileCom.", ast.E, ast.C);
   }
@@ -333,6 +339,10 @@ public class LayoutVisitor implements Visitor {
   }
 
   public Object visitIdentifier(Identifier ast, Object obj) {
+    return layoutNullary(ast.spelling);
+ }
+  
+  public Object visitLongIdentifier(LongIdentifier ast, Object obj) {
     return layoutNullary(ast.spelling);
  }
 

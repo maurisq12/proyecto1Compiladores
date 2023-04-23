@@ -30,6 +30,7 @@ import Triangle.AbstractSyntaxTrees.FuncActualParameter;
 import Triangle.AbstractSyntaxTrees.FuncDeclaration;
 import Triangle.AbstractSyntaxTrees.FuncFormalParameter;
 import Triangle.AbstractSyntaxTrees.Identifier;
+import Triangle.AbstractSyntaxTrees.LongIdentifier;
 import Triangle.AbstractSyntaxTrees.IfCommand;
 import Triangle.AbstractSyntaxTrees.IfExpression;
 import Triangle.AbstractSyntaxTrees.IntTypeDenoter;
@@ -67,6 +68,7 @@ import Triangle.AbstractSyntaxTrees.VarDeclaration;
 import Triangle.AbstractSyntaxTrees.VarFormalParameter;
 import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
+import Triangle.AbstractSyntaxTrees.UntilCommand;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -110,6 +112,10 @@ public class TreeVisitor implements Visitor {
     
     public Object visitSequentialCommand(SequentialCommand ast, Object obj) {
         return(createBinary("Sequential Command", ast.C1, ast.C2));
+    }
+    
+    public Object visitUntilCommand(UntilCommand ast, Object obj) {
+        return(createBinary("Until Command", ast.E, ast.C));
     }
     
     public Object visitWhileCommand(WhileCommand ast, Object obj) {
@@ -329,6 +335,10 @@ public class TreeVisitor implements Visitor {
     }
     
     public Object visitIdentifier(Identifier ast, Object obj) {
+        return(createNullary(ast.spelling));
+    }
+    
+    public Object visitLongIdentifier(LongIdentifier ast, Object obj) {
         return(createNullary(ast.spelling));
     }
     

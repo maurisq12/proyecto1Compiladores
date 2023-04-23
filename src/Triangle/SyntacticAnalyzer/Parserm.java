@@ -10,7 +10,7 @@
  * This software is provided free for educational use only. It may
  * not be used for commercial purposes without the prior written permission
  * of the authors.
- */
+ 
 
 package Triangle.SyntacticAnalyzer;
 
@@ -43,7 +43,6 @@ import Triangle.AbstractSyntaxTrees.FuncActualParameter;
 import Triangle.AbstractSyntaxTrees.FuncDeclaration;
 import Triangle.AbstractSyntaxTrees.FuncFormalParameter;
 import Triangle.AbstractSyntaxTrees.Identifier;
-import Triangle.AbstractSyntaxTrees.LongIdentifier;
 import Triangle.AbstractSyntaxTrees.IfCommand;
 import Triangle.AbstractSyntaxTrees.IfExpression;
 import Triangle.AbstractSyntaxTrees.IntegerExpression;
@@ -81,17 +80,16 @@ import Triangle.AbstractSyntaxTrees.VarDeclaration;
 import Triangle.AbstractSyntaxTrees.VarFormalParameter;
 import Triangle.AbstractSyntaxTrees.Vname;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
-import Triangle.AbstractSyntaxTrees.UntilCommand;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
 
-public class Parser {
+public class Parserm {
 
   private Scanner lexicalAnalyser;
   private ErrorReporter errorReporter;
   private Token currentToken;
   private SourcePosition previousTokenPosition;
 
-  public Parser(Scanner lexer, ErrorReporter reporter) {
+  public Parserm(Scanner lexer, ErrorReporter reporter) {
     lexicalAnalyser = lexer;
     errorReporter = reporter;
     previousTokenPosition = new SourcePosition();
@@ -106,7 +104,6 @@ public class Parser {
       previousTokenPosition = currentToken.position;
       currentToken = lexicalAnalyser.scan();
     } else {
-        System.out.println("aquí");
       syntacticError("\"%\" expected here", Token.spell(tokenExpected));
     }
   }
@@ -155,7 +152,7 @@ public class Parser {
     try {
       Command cAST = parseCommand();
       programAST = new Program(cAST, previousTokenPosition);
-      if (currentToken.kind != Token.EOT && currentToken.kind != Token.SKIP) {
+      if (currentToken.kind != Token.EOT) {
         syntacticError("\"%\" not expected after end of program",
           currentToken.spelling);
       }
@@ -223,25 +220,6 @@ public class Parser {
     }
     return I;
   }
-  
- // parseIdentifier parses an identifier, and constructs a leaf AST to
-// represent it.
-
-  LongIdentifier parseLongIdentifier() throws SyntaxError {
-    LongIdentifier LI = null;
-
-    if (currentToken.kind == Token.LONGIDENTIFIER) {
-      previousTokenPosition = currentToken.position;
-      String spelling = currentToken.spelling;
-      LI = new LongIdentifier(spelling, previousTokenPosition);
-      currentToken = lexicalAnalyser.scan();
-    } else {
-      LI = null;
-      syntacticError("long-identifier expected here", "");
-    }
-    return LI;
-  }
-  
 
 // parseOperator parses an operator, and constructs a leaf AST to
 // represent it.
@@ -293,150 +271,88 @@ public class Parser {
     start(commandPos);
 
     switch (currentToken.kind) {
-        
-    case Token.SKIP:
-      acceptIt();
-      finish(commandPos);
-      commandAST = new EmptyCommand(commandPos);
-      break;
-      
-    case Token.LONGIDENTIFIER:
+
+    case Token.IDENTIFIER:
       {
-        System.out.println("saaal");
-        acceptIt();
-        LongIdentifier iAST = parseLongIdentifier();
+        Identifier iAST = parseIdentifier();
         if (currentToken.kind == Token.LPAREN) {
           acceptIt();
           ActualParameterSequence apsAST = parseActualParameterSequence();
           accept(Token.RPAREN);
           finish(commandPos);
           commandAST = new CallCommand(iAST, apsAST, commandPos);
-        }
-      }
-        break; 
-      
-    case Token.IDENTIFIER:
-       {
-           System.out.println("kkkkaaal");
-          acceptIt();
-          Identifier lAST = parseIdentifier();
-          Vname vAST = parseRestOfVname(lAST);
+
+        } else {
+
+          Vname vAST = parseRestOfVname(iAST);
           accept(Token.BECOMES);
           Expression eAST = parseExpression();
           finish(commandPos);
           commandAST = new AssignCommand(vAST, eAST, commandPos);
+        }
       }
       break;
-      
+//quitar el begin
+    case Token.BEGIN:
+      acceptIt();
+      commandAST = parseCommand();
+      accept(Token.END);
+      break;
+//quitar el let
     case Token.LET:
       {
         acceptIt();
         Declaration dAST = parseDeclaration();
         accept(Token.IN);
-        System.out.println("gwf");
-        Command cAST = parseCommand();
-        System.out.println("gwf2");
+        Command cAST = parseSingleCommand();
         finish(commandPos);
         commandAST = new LetCommand(dAST, cAST, commandPos);
       }
       break;
-      
-    //arreglarlo
+//quitar el if
     case Token.IF:
-        {
+      {
         acceptIt();
         Expression eAST = parseExpression();
         accept(Token.THEN);
-        Command cAST = parseCommand();
+        Command c1AST = parseSingleCommand();
+        accept(Token.ELSE);
+        Command c2AST = parseSingleCommand();
         finish(commandPos);
-        commandAST = new IfCommand(eAST, cAST,cAST, commandPos);
+        commandAST = new IfCommand(eAST, c1AST, c2AST, commandPos);
       }
       break;
-        
-    case Token.REPEAT:{
+//quitar el while
+    case Token.WHILE:
+      {
         acceptIt();
-        switch (currentToken.kind) {
-            case Token.WHILE:
-            case Token.UNTIL:{
-                int flag = currentToken.kind;
-                acceptIt();
-                Expression eAST = parseExpression();
-                accept(Token.DO);
-                Command cAST = parseCommand();
-                accept(Token.END);
-                if(flag==22)
-                    commandAST = new WhileCommand(eAST,cAST,commandPos);
-                else
-                    commandAST = new UntilCommand(eAST,cAST,commandPos);
-            }
-            break;
-            case Token.DO:
-                acceptIt();
-                Command cAST = parseCommand();
-                if(currentToken.kind==Token.WHILE || currentToken.kind==Token.WHILE){
-                    int flag = currentToken.kind;
-                    acceptIt();
-                    Expression eAST = parseExpression();
-                    accept(Token.END);
-                    if(flag==22)
-                        commandAST = new WhileCommand(eAST,cAST,commandPos);
-                    else
-                        commandAST = new UntilCommand(eAST,cAST,commandPos);
-                }
-                break;
-                //el de expression no sé como se pone
-            default:
-                syntacticError("\"%\" cannot start a command",
-        currentToken.spelling);
-                break;
-            } 
-    }/*
-    case Token.FOR:
-    {
-        acceptIt();
-        Identifier iAST = parseIdentifier();
-        accept(Token.BECOMES);
         Expression eAST = parseExpression();
-        accept(Token.DOTS);
-        Expression eAST2 = parseExpression();
-        switch(currentToken.kind){
-            case Token.DO:
-            case Token.WHILE:
-            case Token.UNTIL:
-                int flag = currentToken.kind;
-                Expression eAST3 = parseExpression();
-                accept(Token.DO);
-                Command cAST = parseCommand();
-                accept(Token.END);
-                if(flag==7)
-                    commandAST = new DoCommand(); 
-                    28
-                    31
-                           
-                
-                
-        }
-        Token.UN*/
-        
-        
-        
-    
-    
-    
-    
-    
-    
+        accept(Token.DO);
+        Command cAST = parseSingleCommand();
+        finish(commandPos);
+        commandAST = new WhileCommand(eAST, cAST, commandPos);
+      }
+      break;
+//creo que hay que comentar 
+    case Token.SEMICOLON:
+    case Token.END:
+    case Token.ELSE:
+    case Token.IN:
+    case Token.EOT:
+
+      finish(commandPos);
+      commandAST = new EmptyCommand(commandPos);
+      break;
+//hasta aquí
     default:
       syntacticError("\"%\" cannot start a command",
         currentToken.spelling);
       break;
+
     }
 
     return commandAST;
-    }
-    
-
-    
+  }
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -544,26 +460,21 @@ public class Parser {
       }
       break;
 
-    case Token.LONGIDENTIFIER:
+    case Token.IDENTIFIER:
       {
-        LongIdentifier liAST= parseLongIdentifier();
+        Identifier iAST= parseIdentifier();
         if (currentToken.kind == Token.LPAREN) {
           acceptIt();
           ActualParameterSequence apsAST = parseActualParameterSequence();
           accept(Token.RPAREN);
           finish(expressionPos);
-          expressionAST = new CallExpression(liAST, apsAST, expressionPos);
+          expressionAST = new CallExpression(iAST, apsAST, expressionPos);
 
-        }
-      }
-      break;
-      
-    case Token.IDENTIFIER:
-      {
-          Identifier iAST= parseIdentifier();
+        } else {
           Vname vAST = parseRestOfVname(iAST);
           finish(expressionPos);
           expressionAST = new VnameExpression(vAST, expressionPos);
+        }
       }
       break;
 
@@ -1047,5 +958,4 @@ public class Parser {
     }
     return fieldAST;
   }
-  
-}
+}*/

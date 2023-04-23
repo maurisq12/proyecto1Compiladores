@@ -30,6 +30,7 @@ import Triangle.AbstractSyntaxTrees.FuncActualParameter;
 import Triangle.AbstractSyntaxTrees.FuncDeclaration;
 import Triangle.AbstractSyntaxTrees.FuncFormalParameter;
 import Triangle.AbstractSyntaxTrees.Identifier;
+import Triangle.AbstractSyntaxTrees.LongIdentifier;
 import Triangle.AbstractSyntaxTrees.IfCommand;
 import Triangle.AbstractSyntaxTrees.IfExpression;
 import Triangle.AbstractSyntaxTrees.IntTypeDenoter;
@@ -67,6 +68,7 @@ import Triangle.AbstractSyntaxTrees.VarDeclaration;
 import Triangle.AbstractSyntaxTrees.VarFormalParameter;
 import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
+import Triangle.AbstractSyntaxTrees.UntilCommand;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
 import Triangle.CodeGenerator.Field;
 import Triangle.CodeGenerator.KnownAddress;
@@ -130,6 +132,13 @@ public class TableVisitor implements Visitor {
   public Object visitSequentialCommand(SequentialCommand ast, Object o) { 
       ast.C1.visit(this, null);
       ast.C2.visit(this, null);
+      
+      return(null);
+  }
+  
+  public Object visitUntilCommand(UntilCommand ast, Object o) { 
+      ast.E.visit(this, null);
+      ast.C.visit(this, null);
       
       return(null);
   }
@@ -541,6 +550,10 @@ public class TableVisitor implements Visitor {
   }
   
   public Object visitIdentifier(Identifier ast, Object o) {             
+      return(null);
+  }
+  
+  public Object visitLongIdentifier(LongIdentifier ast, Object o) {             
       return(null);
   }
   

@@ -24,11 +24,19 @@ public class CallCommand extends Command {
     I = iAST;
     APS = apsAST;
   }
+  
+  public CallCommand (LongIdentifier iAST, ActualParameterSequence apsAST,
+               SourcePosition thePosition) {
+    super (thePosition);
+    LI = iAST;
+    APS = apsAST;
+  }
 
   public Object visit(Visitor v, Object o) {
     return v.visitCallCommand(this, o);
   }
 
   public Identifier I;
+  public LongIdentifier LI;
   public ActualParameterSequence APS;
 }

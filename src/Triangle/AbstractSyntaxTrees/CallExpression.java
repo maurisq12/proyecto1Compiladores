@@ -24,11 +24,20 @@ public class CallExpression extends Expression {
     I = iAST;
     APS = apsAST;
   }
+  
+  public CallExpression (LongIdentifier iAST, ActualParameterSequence apsAST,
+               SourcePosition thePosition) {
+    super (thePosition);
+    LI = iAST;
+    APS = apsAST;
+  }
+
 
   public Object visit(Visitor v, Object o) {
     return v.visitCallExpression(this, o);
   }
 
   public Identifier I;
+  public LongIdentifier LI;
   public ActualParameterSequence APS;
 }

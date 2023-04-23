@@ -126,7 +126,7 @@ public final class Scanner {
       	takeIt();
         return Token.CHARLITERAL;
       } else
-        return Token.ERROR;
+        return Token.ERROR;        
 
     case '.':
       takeIt();

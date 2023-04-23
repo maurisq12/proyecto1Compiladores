@@ -67,7 +67,7 @@ final class Token extends Object {
     LONGIDENTIFIER=3,
     OPERATOR	= 4,
 
-    // reserved words - must be in alphabetical order...
+    // reserved words - must be in alphabetical order...-
     ARRAY		= 5,//se elimina begin
     CONST		= 6,
     DO			= 7,
@@ -129,8 +129,8 @@ final class Token extends Object {
     "const",
     "do",
     "else",
-    "end",
-    "for",
+    "end", 
+    "for", //10
     "from",
     "func",
     "if",
@@ -140,7 +140,7 @@ final class Token extends Object {
     "package",
     "private",
     "proc",
-    "rec",
+    "rec", //20
     "record",
     "repeat",
     "select",
@@ -150,7 +150,7 @@ final class Token extends Object {
     "type",
     "until",
     "var",
-    "when",
+    "when",//30
     "while",
     ".",
     ":",
@@ -160,7 +160,7 @@ final class Token extends Object {
     "~",
     "|",
     "$",
-    "..",
+    "..", //40
     "(",
     ")",
     "[",
@@ -168,7 +168,7 @@ final class Token extends Object {
     "{",
     "}",
     "",
-    "<error>"
+    "<error>"  //48
   };
 
   private final static int	firstReservedWord = Token.ARRAY,

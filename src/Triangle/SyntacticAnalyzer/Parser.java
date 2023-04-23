@@ -302,7 +302,6 @@ public class Parser {
       
     case Token.LONGIDENTIFIER:
       {
-        System.out.println("saaal");
         acceptIt();
         LongIdentifier iAST = parseLongIdentifier();
         if (currentToken.kind == Token.LPAREN) {
@@ -316,15 +315,23 @@ public class Parser {
         break; 
       
     case Token.IDENTIFIER:
-       {
-           System.out.println("kkkkaaal");
+      {
+        Identifier iAST = parseIdentifier();
+        if (currentToken.kind == Token.LPAREN) {
           acceptIt();
-          Identifier lAST = parseIdentifier();
-          Vname vAST = parseRestOfVname(lAST);
+          ActualParameterSequence apsAST = parseActualParameterSequence();
+          accept(Token.RPAREN);
+          finish(commandPos);
+          commandAST = new CallCommand(iAST, apsAST, commandPos);
+
+        } else {
+
+          Vname vAST = parseRestOfVname(iAST);
           accept(Token.BECOMES);
           Expression eAST = parseExpression();
           finish(commandPos);
           commandAST = new AssignCommand(vAST, eAST, commandPos);
+        }
       }
       break;
       
@@ -333,25 +340,26 @@ public class Parser {
         acceptIt();
         Declaration dAST = parseDeclaration();
         accept(Token.IN);
-        System.out.println("gwf");
         Command cAST = parseCommand();
-        System.out.println("gwf2");
+        accept(Token.END);
         finish(commandPos);
         commandAST = new LetCommand(dAST, cAST, commandPos);
       }
       break;
       
-    //arreglarlo
     case Token.IF:
         {
         acceptIt();
         Expression eAST = parseExpression();
         accept(Token.THEN);
         Command cAST = parseCommand();
+        System.out.println(currentToken.kind);
+        Command cAST2 = parseRestoDelIf();
+        System.out.println(currentToken.kind);
         finish(commandPos);
-        commandAST = new IfCommand(eAST, cAST,cAST, commandPos);
-      }
-      break;
+        commandAST = new IfCommand(eAST,cAST,cAST2,commandPos); 
+    }
+        break;
         
     case Token.REPEAT:{
         acceptIt();
@@ -417,15 +425,6 @@ public class Parser {
                 
         }
         Token.UN*/
-        
-        
-        
-    
-    
-    
-    
-    
-    
     default:
       syntacticError("\"%\" cannot start a command",
         currentToken.spelling);
@@ -434,6 +433,41 @@ public class Parser {
 
     return commandAST;
     }
+  
+  Command parseRestoDelIf() throws SyntaxError {
+      System.out.println("Resto in");
+      System.out.println(currentToken.kind);
+      Command restoAST = null; //en caso de error sintáctico
+      SourcePosition restoPos = new SourcePosition();
+      start (restoPos);
+      switch(currentToken.kind){
+          case Token.PIPE:{
+            acceptIt();
+            Expression eAST = parseExpression();
+            accept(Token.THEN);
+            Command c1AST = parseCommand();
+            Command c2AST = parseRestoDelIf();
+            finish(restoPos);
+            restoAST= new IfCommand(eAST, c1AST, c2AST, restoPos);
+            break;
+          }
+          case Token.ELSE:{
+            acceptIt();
+            Command commandAST  = parseCommand();
+            accept(Token.END);
+            finish(restoPos);
+            restoAST= commandAST ;
+          }
+          break;
+          default:
+              syntacticError("\"%\" cannot start a command",
+        currentToken.spelling);
+              break;
+      }
+      return restoAST;
+      
+  }
+  
     
 
     

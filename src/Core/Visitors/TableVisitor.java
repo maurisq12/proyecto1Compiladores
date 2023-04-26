@@ -79,6 +79,11 @@ import Triangle.CodeGenerator.UnknownAddress;
 import Triangle.CodeGenerator.UnknownRoutine;
 import Triangle.CodeGenerator.UnknownValue;
 import javax.swing.table.DefaultTableModel;
+import Triangle.AbstractSyntaxTrees.DoBody;
+import Triangle.AbstractSyntaxTrees.WhileBody;
+import Triangle.AbstractSyntaxTrees.ForBody;
+import Triangle.AbstractSyntaxTrees.UntilBody;
+import Triangle.AbstractSyntaxTrees.RepeatCommand;
 
 /**
  * Implements the Triangle Visitor interface, which is used to
@@ -635,4 +640,35 @@ public class TableVisitor implements Visitor {
   // <editor-fold defaultstate="collapsed" desc=" Attributes ">
     private DefaultTableModel model;
     // </editor-fold>
+    
+  
+    
+  //AGREGADO:
+    
+    
+    @Override
+    public Object visitRepeatCommand(RepeatCommand aThis, Object o) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitWhileBody(WhileBody aThis, Object object) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitUntilBody(UntilBody aThis, Object object) {
+        throw new UnsupportedOperationException("For later implementation"); 
+    }
+
+    @Override
+    public Object visitDoBody(DoBody aThis, Object o) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitForBody(ForBody aThis, Object o) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

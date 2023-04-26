@@ -71,6 +71,11 @@ import Triangle.AbstractSyntaxTrees.VnameExpression;
 import Triangle.AbstractSyntaxTrees.UntilCommand;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
 import javax.swing.tree.DefaultMutableTreeNode;
+import Triangle.AbstractSyntaxTrees.DoBody;
+import Triangle.AbstractSyntaxTrees.WhileBody;
+import Triangle.AbstractSyntaxTrees.ForBody;
+import Triangle.AbstractSyntaxTrees.UntilBody;
+import Triangle.AbstractSyntaxTrees.RepeatCommand;
 
 /**
  * Implements the Triangle Visitor interface, which is used to
@@ -411,6 +416,8 @@ public class TreeVisitor implements Visitor {
         return(t);
     }
     
+    
+    
     /**
      * Creates a ternary tree node.
      * @param caption The tree's caption (text to be shown when the tree is drawn).
@@ -426,6 +433,15 @@ public class TreeVisitor implements Visitor {
         t.add((DefaultMutableTreeNode)child3.visit(this, null));
         
         return(t);        
+    }
+    
+    public DefaultMutableTreeNode createTernary(String caption, DefaultMutableTreeNode child1, AST child2, AST child3) {
+        DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
+        t.add((DefaultMutableTreeNode)child1);
+        t.add((DefaultMutableTreeNode)child2.visit(this, null));
+        t.add((DefaultMutableTreeNode)child3.visit(this, null));
+        
+        return(t);             
     }
     
     /**
@@ -446,5 +462,47 @@ public class TreeVisitor implements Visitor {
         
         return(t);             
     }
+    
+    public DefaultMutableTreeNode createQuaternary(String caption, DefaultMutableTreeNode child1, AST child2, AST child3, AST child4) {
+        DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
+        t.add((DefaultMutableTreeNode)child1);
+        t.add((DefaultMutableTreeNode)child2.visit(this, null));
+        t.add((DefaultMutableTreeNode)child3.visit(this, null));
+        t.add((DefaultMutableTreeNode)child4.visit(this, null));
+        
+        return(t);             
+    }
     // </editor-fold>
+
+//AGREGADO:
+    
+    @Override
+    public Object visitWhileBody(WhileBody ast, Object obj) {
+        return(createBinary("Repeat While ", ast.E, ast.C));
+    }
+
+
+    @Override
+    public Object visitRepeatCommand(RepeatCommand aThis, Object o) {
+        return(createUnary("Repeat command", aThis.rb));
+    }
+
+    @Override
+    public Object visitUntilBody(UntilBody ast, Object object) {
+        return (createBinary("Repeat Until ", ast.E, ast.C));
+    }
+
+    @Override
+    public Object visitDoBody(DoBody ast, Object o) {
+        return (createBinary("Repeat do ", ast.C, ast.E));
+    }
+
+    @Override
+    public Object visitForBody(ForBody ast, Object o) {
+        if(ast.E3!=null)
+            return ((createQuaternary("For",createBinary("Inicio for" ,ast.I, ast.E1), ast.E2,ast.E3, ast.C)));
+        else
+            return ((createTernary("For",createBinary("Inicio for" ,ast.I, ast.E1), ast.E2, ast.C)));
+    }
+
 }

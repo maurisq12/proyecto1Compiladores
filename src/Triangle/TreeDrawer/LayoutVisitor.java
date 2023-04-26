@@ -82,6 +82,11 @@ import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
 import Triangle.AbstractSyntaxTrees.UntilCommand;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
+import Triangle.AbstractSyntaxTrees.DoBody;
+import Triangle.AbstractSyntaxTrees.WhileBody;
+import Triangle.AbstractSyntaxTrees.ForBody;
+import Triangle.AbstractSyntaxTrees.UntilBody;
+import Triangle.AbstractSyntaxTrees.RepeatCommand;
 
 public class LayoutVisitor implements Visitor {
 
@@ -552,5 +557,34 @@ public class LayoutVisitor implements Visitor {
 
     return r;
   }
+  
+  
+  //AGREGADO:
+  
+  
+    @Override
+    public Object visitRepeatCommand(RepeatCommand aThis, Object o) {
+        return layoutUnary("RepeatComm", aThis.rb); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitWhileBody(WhileBody aThis, Object object) {
+        return layoutBinary("WhileLoop", aThis.E, aThis.C); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitUntilBody(UntilBody aThis, Object object) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitDoBody(DoBody aThis, Object o) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitForBody(ForBody aThis, Object o) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

@@ -130,6 +130,9 @@ public final class Scanner {
 
     case '.':
       takeIt();
+      if(currentChar =='.'){
+          takeIt();
+          return Token.DOTS;}
       return Token.DOT;
 
     case ':':
@@ -175,7 +178,15 @@ public final class Scanner {
     case '}':
       takeIt();
       return Token.RCURLY;
-
+      
+    case '|':
+      takeIt();
+      return Token.PIPE;
+        
+    case '$':
+      takeIt();
+      return Token.DOLLAR;
+      
     case SourceFile.EOT:
       return Token.EOT;
 

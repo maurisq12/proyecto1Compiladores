@@ -106,4 +106,12 @@ public interface Visitor {
   // Programs
   public abstract Object visitProgram(Program ast, Object o);
   
+  
+  //AGREGADO:
+  
+  public abstract Object visitRepeatCommand(RepeatCommand aThis, Object o);
+  public abstract Object visitWhileBody(WhileBody aThis, Object object);
+  public abstract Object visitUntilBody(UntilBody aThis, Object object);
+  public abstract Object visitDoBody(DoBody aThis, Object o);
+  public abstract Object visitForBody(ForBody aThis, Object o);
 }

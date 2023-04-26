@@ -88,6 +88,11 @@ import Triangle.AbstractSyntaxTrees.VnameExpression;
 import Triangle.AbstractSyntaxTrees.UntilCommand;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
 import Triangle.SyntacticAnalyzer.SourcePosition;
+import Triangle.AbstractSyntaxTrees.DoBody;
+import Triangle.AbstractSyntaxTrees.WhileBody;
+import Triangle.AbstractSyntaxTrees.ForBody;
+import Triangle.AbstractSyntaxTrees.UntilBody;
+import Triangle.AbstractSyntaxTrees.RepeatCommand;
 
 public final class Checker implements Visitor {
 
@@ -955,4 +960,33 @@ public final class Checker implements Visitor {
     StdEnvironment.unequalDecl = declareStdBinaryOp("\\=", StdEnvironment.anyType, StdEnvironment.anyType, StdEnvironment.booleanType);
 
   }
+  
+  
+  //AGREGADO:
+    @Override
+    public Object visitRepeatCommand(RepeatCommand aThis, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitWhileBody(WhileBody aThis, Object object) {
+        return null;
+    }
+
+    @Override
+    public Object visitUntilBody(UntilBody aThis, Object object) {
+        return null;
+    }
+
+    @Override
+    public Object visitDoBody(DoBody aThis, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitForBody(ForBody aThis, Object o) {
+        return null;
+    }
+  
+  
 }

@@ -81,8 +81,12 @@ import Triangle.AbstractSyntaxTrees.VarDeclaration;
 import Triangle.AbstractSyntaxTrees.VarFormalParameter;
 import Triangle.AbstractSyntaxTrees.Vname;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
-import Triangle.AbstractSyntaxTrees.UntilCommand;
-import Triangle.AbstractSyntaxTrees.WhileCommand;
+import Triangle.AbstractSyntaxTrees.DoBody;
+import Triangle.AbstractSyntaxTrees.WhileBody;
+import Triangle.AbstractSyntaxTrees.ForBody;
+import Triangle.AbstractSyntaxTrees.UntilBody;
+import Triangle.AbstractSyntaxTrees.RepeatCommand;
+
 
 public class Parser {
 
@@ -364,78 +368,55 @@ public class Parser {
     case Token.REPEAT:{
         acceptIt();
         switch (currentToken.kind) {
-            case Token.WHILE:
-            case Token.UNTIL:{
-                int flag = currentToken.kind;
+            case Token.WHILE:{
                 acceptIt();
-                Expression eAST = parseExpression();
-                accept(Token.DO);
-                Command cAST = parseCommand();
-                accept(Token.END);
-                if(flag==22)
-                    commandAST = new WhileCommand(eAST,cAST,commandPos);
-                else
-                    commandAST = new UntilCommand(eAST,cAST,commandPos);
+                WhileBody whileBody = parseWhileBody();
+                finish(commandPos);
+                commandAST = new RepeatCommand(whileBody, commandPos);
             }
             break;
-            case Token.DO:
+                
+            case Token.UNTIL:{                
                 acceptIt();
-                Command cAST = parseCommand();
-                if(currentToken.kind==Token.WHILE || currentToken.kind==Token.WHILE){
-                    int flag = currentToken.kind;
-                    acceptIt();
-                    Expression eAST = parseExpression();
-                    accept(Token.END);
-                    if(flag==22)
-                        commandAST = new WhileCommand(eAST,cAST,commandPos);
-                    else
-                        commandAST = new UntilCommand(eAST,cAST,commandPos);
-                }
-                break;
-                //el de expression no sé como se pone
-            default:
-                syntacticError("\"%\" cannot start a command",
+                UntilBody untilBody = parseUntilBody();
+                finish(commandPos);
+                commandAST = new RepeatCommand(untilBody, commandPos);
+            }
+            break;
+            
+            case Token.DO:{
+                acceptIt();
+                DoBody doBody = parseDoBody();
+                finish(commandPos);
+                commandAST = new RepeatCommand(doBody, commandPos);
+            }
+            break;
+            
+            default:{
+                syntacticError("Found: \"%\", was expecting while, until, do",
         currentToken.spelling);
-                break;
-            } 
-    }/*
-    case Token.FOR:
-    {
+            }
+            break;
+        } 
+    }
+    break;
+    case Token.FOR:{
         acceptIt();
-        Identifier iAST = parseIdentifier();
-        accept(Token.BECOMES);
-        Expression eAST = parseExpression();
-        accept(Token.DOTS);
-        Expression eAST2 = parseExpression();
-        switch(currentToken.kind){
-            case Token.DO:
-            case Token.WHILE:
-            case Token.UNTIL:
-                int flag = currentToken.kind;
-                Expression eAST3 = parseExpression();
-                accept(Token.DO);
-                Command cAST = parseCommand();
-                accept(Token.END);
-                if(flag==7)
-                    commandAST = new DoCommand(); 
-                    28
-                    31
-                           
-                
-                
-        }
-        Token.UN*/
+        ForBody forBody = parseForBody();
+        finish(commandPos);
+        commandAST = new RepeatCommand(forBody,commandPos);           
+    }
+    break;
+
     default:
       syntacticError("\"%\" cannot start a command",
         currentToken.spelling);
       break;
     }
-
     return commandAST;
     }
   
   Command parseRestoDelIf() throws SyntaxError {
-      System.out.println("Resto in");
       System.out.println(currentToken.kind);
       Command restoAST = null; //en caso de error sintáctico
       SourcePosition restoPos = new SourcePosition();
@@ -468,6 +449,107 @@ public class Parser {
       
   }
   
+  WhileBody parseWhileBody() throws SyntaxError{
+      
+     WhileBody wbAST = null;
+     SourcePosition wPos = new SourcePosition();
+     start(wPos);
+     Expression exprAST = parseExpression();
+     accept(Token.DO);
+     Command commandAST = parseCommand();
+     accept(Token.END);
+     finish(wPos);
+     wbAST = new WhileBody(exprAST, commandAST, wPos);
+     
+     return wbAST;
+  }
+  
+  UntilBody parseUntilBody() throws SyntaxError{
+      
+     UntilBody untilBodyAST = null;
+     SourcePosition commandPos = new SourcePosition();
+     start(commandPos);
+     Expression exprAST = parseExpression();
+     accept(Token.DO);
+     Command commandAST = parseCommand();
+     accept(Token.END);
+     finish(commandPos);
+     untilBodyAST = new UntilBody(exprAST, commandAST, commandPos);
+     
+     return untilBodyAST;
+  }
+  
+  DoBody parseDoBody() throws SyntaxError{
+     DoBody doBodyAST = null;
+     SourcePosition commandPos = new SourcePosition();
+     start(commandPos);
+     Command commandAST = parseCommand();
+     
+     if(currentToken.kind == Token.WHILE)
+         accept(Token.WHILE);
+     else if(currentToken.kind == Token.UNTIL)
+         accept(Token.UNTIL);
+     else
+         syntacticError("found \"%\", while or until expected",
+        currentToken.spelling);
+                 
+     Expression exprAST = parseExpression();
+     accept(Token.END);
+     finish(commandPos);
+     
+     doBodyAST = new DoBody(commandAST, exprAST, commandPos);
+     
+     return doBodyAST;
+  }
+  
+  
+  ForBody parseForBody() throws SyntaxError{
+     ForBody forBodyAST = null;
+     
+     SourcePosition commandPos = new SourcePosition();
+     start(commandPos);
+     
+     Identifier iAST = parseIdentifier();
+     
+     accept(Token.BECOMES);
+     
+     Expression eAST1 = parseExpression();
+     
+     accept(Token.DOTS);
+     
+     Expression eAST2 = parseExpression();
+     
+     Expression eAST3 = null;
+     
+     //#2 NUEVO: Agregado un tipo de for omitido anteriormente
+     
+     if(currentToken.kind == Token.WHILE){
+         accept(Token.WHILE);
+         eAST3 = parseExpression();
+         if(eAST3==null)
+            System.out.println("wtf");
+     }
+     else if(currentToken.kind == Token.UNTIL){
+         accept(Token.UNTIL);
+         eAST3 = parseExpression();
+     }
+     else if(currentToken.kind == Token.DO){
+         eAST3 = null;
+     }
+     else
+         syntacticError("found \"%\", while or until expected",
+        currentToken.spelling);
+     
+     accept(Token.DO);
+     
+     Command commandAST = parseCommand();
+     accept(Token.END);
+     finish(commandPos);
+     
+     forBodyAST = new ForBody(iAST, eAST1, eAST2, eAST3, commandAST, commandPos);
+     
+     return forBodyAST;
+  }
     
 
     

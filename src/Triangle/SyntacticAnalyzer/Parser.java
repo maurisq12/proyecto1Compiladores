@@ -795,15 +795,51 @@ public class Parser {
 
     SourcePosition declarationPos = new SourcePosition();
     start(declarationPos);
-    declarationAST = parseSingleDeclaration();
+    declarationAST = parseCompoundDeclaration();
     while (currentToken.kind == Token.SEMICOLON) {
       acceptIt();
-      Declaration d2AST = parseSingleDeclaration();
+      Declaration d2AST = parseCompoundDeclaration();
       finish(declarationPos);
-      declarationAST = new SequentialDeclaration(declarationAST, d2AST,
-        declarationPos);
+      declarationAST = new SequentialDeclaration(declarationAST, d2AST, declarationPos);
     }
     return declarationAST;
+  }
+  
+  Declaration parseCompoundDeclaration() throws SyntaxError {
+      Declaration declarationAST = null; // in case there's a syntactic error
+      SourcePosition declarationPos = new SourcePosition();
+      start(declarationPos);
+      
+      switch (currentToken.kind) {
+          case Token.CONST:
+          case Token.VAR:
+          case Token.PROC:
+          case Token.FUNC:
+          case Token.TYPE:
+              Declaration sdAST = parseSingleDeclaration();
+              break;
+          case Token.REC:
+          {
+              acceptIt();
+              //ProcFuncs pfAST = parseProcFuncs();
+              accept(Token.END);
+              finish(declarationPos);
+              //declarationAST = new procFuncsDeclaration(pfAST,declarationPos);
+          }
+          break;
+          case Token.PRIVATE:{
+              acceptIt();
+              Declaration dAST = parseDeclaration();
+              accept(Token.IN);
+              Declaration dAST2 = parseDeclaration();
+              accept(Token.END);
+              finish(declarationPos);
+              //declarationAST = new privateDeclaration(dAST,dAST2,declarationPos);
+          }
+      }
+      
+      
+      return declarationAST;
   }
 
   Declaration parseSingleDeclaration() throws SyntaxError {

@@ -93,6 +93,11 @@ import Triangle.AbstractSyntaxTrees.WhileBody;
 import Triangle.AbstractSyntaxTrees.ForBody;
 import Triangle.AbstractSyntaxTrees.UntilBody;
 import Triangle.AbstractSyntaxTrees.RepeatCommand;
+import Triangle.AbstractSyntaxTrees.ProcFuncs;
+import Triangle.AbstractSyntaxTrees.ProcFunc;
+import Triangle.AbstractSyntaxTrees.PrivateDeclaration;
+import Triangle.AbstractSyntaxTrees.RecDeclaration;
+import Triangle.AbstractSyntaxTrees.VarInit;
 
 public final class Checker implements Visitor {
 
@@ -985,6 +990,32 @@ public final class Checker implements Visitor {
 
     @Override
     public Object visitForBody(ForBody aThis, Object o) {
+        return null;
+    }
+    
+    @Override
+    public Object visitPrivateDeclaration(PrivateDeclaration aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitRecDeclaration(RecDeclaration aThis, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitProcFuncs(ProcFuncs aThis, Object o) {
+        return null;
+    }
+
+    
+    @Override
+    public Object visitVarInit(VarInit aThis, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitProcFunc(ProcFunc aThis, Object o) {
         return null;
     }
   

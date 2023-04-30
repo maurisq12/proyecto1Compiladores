@@ -114,4 +114,11 @@ public interface Visitor {
   public abstract Object visitUntilBody(UntilBody aThis, Object object);
   public abstract Object visitDoBody(DoBody aThis, Object o);
   public abstract Object visitForBody(ForBody aThis, Object o);
+  
+  public abstract Object visitRecDeclaration(RecDeclaration aThis, Object o);
+  public abstract Object visitPrivateDeclaration(PrivateDeclaration aThis, Object o);
+  public abstract Object visitProcFuncs(ProcFuncs aThis, Object o);
+  
+  public Object visitProcFunc(ProcFunc aThis, Object o);
+  public Object visitVarInit(VarInit aThis, Object o);
 }

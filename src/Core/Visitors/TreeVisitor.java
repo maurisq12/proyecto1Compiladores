@@ -76,6 +76,12 @@ import Triangle.AbstractSyntaxTrees.WhileBody;
 import Triangle.AbstractSyntaxTrees.ForBody;
 import Triangle.AbstractSyntaxTrees.UntilBody;
 import Triangle.AbstractSyntaxTrees.RepeatCommand;
+import Triangle.AbstractSyntaxTrees.ProcFuncs;
+import Triangle.AbstractSyntaxTrees.ProcFunc;
+import Triangle.AbstractSyntaxTrees.PrivateDeclaration;
+import Triangle.AbstractSyntaxTrees.RecDeclaration;
+import Triangle.AbstractSyntaxTrees.VarInit;
+
 
 /**
  * Implements the Triangle Visitor interface, which is used to
@@ -503,6 +509,42 @@ public class TreeVisitor implements Visitor {
             return ((createQuaternary("For",createBinary("Inicio for" ,ast.I, ast.E1), ast.E2,ast.E3, ast.C)));
         else
             return ((createTernary("For",createBinary("Inicio for" ,ast.I, ast.E1), ast.E2, ast.C)));
+    }
+    
+    @Override
+    public Object visitPrivateDeclaration(PrivateDeclaration aThis, Object o) {
+        return(createBinary("Private declaration ", aThis.D1, aThis.D2));
+    }
+
+    @Override
+    public Object visitRecDeclaration(RecDeclaration aThis, Object o) {
+        if(aThis.procBody != null){
+            return createBinary("Rec declaration ", aThis.proc, aThis.procBody);
+        }else{
+            return createUnary("Rec declaration", aThis.proc);
+        }
+        
+    }
+
+    @Override
+    public Object visitProcFuncs(ProcFuncs aThis, Object o) {
+        if(aThis.procFunc1 != null){
+            return createBinary("Proc Funcs ",aThis.declaration, aThis.procFunc1);
+        }else{
+            return createUnary("Proc Func", aThis.declaration);
+        }
+         
+    }
+
+    
+    @Override
+    public Object visitVarInit(VarInit aThis, Object o) {
+        return createBinary("Var init ", aThis.I, aThis.E);
+    }
+
+    @Override
+    public Object visitProcFunc(ProcFunc aThis, Object o) {
+        return createUnary("Proc Func", aThis.D);
     }
 
 }

@@ -84,6 +84,11 @@ import Triangle.AbstractSyntaxTrees.WhileBody;
 import Triangle.AbstractSyntaxTrees.ForBody;
 import Triangle.AbstractSyntaxTrees.UntilBody;
 import Triangle.AbstractSyntaxTrees.RepeatCommand;
+import Triangle.AbstractSyntaxTrees.ProcFuncs;
+import Triangle.AbstractSyntaxTrees.ProcFunc;
+import Triangle.AbstractSyntaxTrees.PrivateDeclaration;
+import Triangle.AbstractSyntaxTrees.RecDeclaration;
+import Triangle.AbstractSyntaxTrees.VarInit;
 
 /**
  * Implements the Triangle Visitor interface, which is used to
@@ -668,6 +673,31 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitForBody(ForBody aThis, Object o) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public Object visitPrivateDeclaration(PrivateDeclaration aThis, Object o) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitRecDeclaration(RecDeclaration aThis, Object o) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitProcFuncs(ProcFuncs aThis, Object o) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public Object visitVarInit(VarInit aThis, Object o) {
+        throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitProcFunc(ProcFunc aThis, Object o) {
         throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
     }
 

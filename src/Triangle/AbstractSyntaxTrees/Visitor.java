@@ -113,6 +113,7 @@ public interface Visitor {
   public abstract Object visitWhileBody(WhileBody aThis, Object object);
   public abstract Object visitUntilBody(UntilBody aThis, Object object);
   public abstract Object visitDoBody(DoBody aThis, Object o);
+  public abstract Object visitTimesBody(TimesBody aThis, Object o);
   public abstract Object visitForBody(ForBody aThis, Object o);
   
   public abstract Object visitRecDeclaration(RecDeclaration aThis, Object o);

@@ -75,6 +75,7 @@ import Triangle.AbstractSyntaxTrees.DoBody;
 import Triangle.AbstractSyntaxTrees.WhileBody;
 import Triangle.AbstractSyntaxTrees.ForBody;
 import Triangle.AbstractSyntaxTrees.UntilBody;
+import Triangle.AbstractSyntaxTrees.TimesBody;
 import Triangle.AbstractSyntaxTrees.RepeatCommand;
 import Triangle.AbstractSyntaxTrees.ProcFuncs;
 import Triangle.AbstractSyntaxTrees.ProcFunc;
@@ -501,6 +502,11 @@ public class TreeVisitor implements Visitor {
     @Override
     public Object visitDoBody(DoBody ast, Object o) {
         return (createBinary("Repeat do ", ast.C, ast.E));
+    }
+    
+    @Override
+    public Object visitTimesBody(TimesBody ast, Object obj) {
+        return(createBinary("Repeat Times ", ast.E, ast.C));
     }
 
     @Override

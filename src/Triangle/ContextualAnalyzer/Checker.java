@@ -92,6 +92,7 @@ import Triangle.AbstractSyntaxTrees.DoBody;
 import Triangle.AbstractSyntaxTrees.WhileBody;
 import Triangle.AbstractSyntaxTrees.ForBody;
 import Triangle.AbstractSyntaxTrees.UntilBody;
+import Triangle.AbstractSyntaxTrees.TimesBody;
 import Triangle.AbstractSyntaxTrees.RepeatCommand;
 import Triangle.AbstractSyntaxTrees.ProcFuncs;
 import Triangle.AbstractSyntaxTrees.ProcFunc;
@@ -987,6 +988,11 @@ public final class Checker implements Visitor {
     public Object visitDoBody(DoBody aThis, Object o) {
         return null;
     }
+    
+    @Override
+    public Object visitTimesBody(TimesBody aThis, Object object) {
+        return null;
+    }
 
     @Override
     public Object visitForBody(ForBody aThis, Object o) {
@@ -995,7 +1001,7 @@ public final class Checker implements Visitor {
     
     @Override
     public Object visitPrivateDeclaration(PrivateDeclaration aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override

@@ -86,6 +86,7 @@ import Triangle.AbstractSyntaxTrees.DoBody;
 import Triangle.AbstractSyntaxTrees.WhileBody;
 import Triangle.AbstractSyntaxTrees.ForBody;
 import Triangle.AbstractSyntaxTrees.UntilBody;
+import Triangle.AbstractSyntaxTrees.TimesBody;
 import Triangle.AbstractSyntaxTrees.RepeatCommand;
 import Triangle.AbstractSyntaxTrees.ProcFuncs;
 import Triangle.AbstractSyntaxTrees.ProcFunc;
@@ -574,7 +575,7 @@ public class LayoutVisitor implements Visitor {
 
     @Override
     public Object visitWhileBody(WhileBody aThis, Object object) {
-        return layoutBinary("WhileLoop", aThis.E, aThis.C); //To change body of generated methods, choose Tools | Templates.
+        return layoutBinary("Repeat while", aThis.E, aThis.C); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -585,6 +586,11 @@ public class LayoutVisitor implements Visitor {
     @Override
     public Object visitDoBody(DoBody aThis, Object o) {
         throw new UnsupportedOperationException("For later implementation"); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public Object visitTimesBody(TimesBody aThis, Object object) {
+        return layoutBinary("Repeat times", aThis.E, aThis.C); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

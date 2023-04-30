@@ -85,6 +85,7 @@ import Triangle.AbstractSyntaxTrees.DoBody;
 import Triangle.AbstractSyntaxTrees.WhileBody;
 import Triangle.AbstractSyntaxTrees.ForBody;
 import Triangle.AbstractSyntaxTrees.UntilBody;
+import Triangle.AbstractSyntaxTrees.TimesBody;
 import Triangle.AbstractSyntaxTrees.RepeatCommand;
 import Triangle.AbstractSyntaxTrees.RecDeclaration;
 import Triangle.AbstractSyntaxTrees.PrivateDeclaration;
@@ -391,13 +392,27 @@ public class Parser {
                 finish(commandPos);
                 commandAST = new RepeatCommand(doBody, commandPos);
             }
-            break;
+            break;   
             
             default:{
-                syntacticError("Found: \"%\", was expecting while, until, do",
+                TimesBody tAST = parseTimesBody();
+                if(tAST!=null){                    
+                    commandAST = new RepeatCommand(tAST, commandPos);
+                }
+                else{
+                    syntacticError("Found: \"%\", was expecting while, until, do or expression",
         currentToken.spelling);
+                }                
             }
             break;
+                
+
+            /*
+            default:{
+                syntacticError("Found: \"%\", was expecting while, until, do or expression",
+        currentToken.spelling);
+            }
+            break;*/
         } 
     }
     break;
@@ -415,7 +430,7 @@ public class Parser {
       break;
     }
     return commandAST;
-    }
+}
   
   Command parseRestoDelIf() throws SyntaxError {
       Command restoAST = null; //en caso de error sintáctico
@@ -462,6 +477,20 @@ public class Parser {
      wbAST = new WhileBody(exprAST, commandAST, wPos);
      
      return wbAST;
+  }
+  
+  TimesBody parseTimesBody() throws SyntaxError{
+      TimesBody tAST = null;
+      SourcePosition tPos = new SourcePosition();
+      start(tPos);
+      Expression exprAST = parseExpression();
+      accept(Token.TIMES);
+      accept(Token.DO);
+      Command commandAST = parseCommand();
+      accept(Token.END);
+      tAST = new TimesBody(exprAST, commandAST, tPos);
+     
+     return tAST;
   }
   
   UntilBody parseUntilBody() throws SyntaxError{

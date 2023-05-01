@@ -43,7 +43,6 @@ import Triangle.AbstractSyntaxTrees.FuncActualParameter;
 import Triangle.AbstractSyntaxTrees.FuncDeclaration;
 import Triangle.AbstractSyntaxTrees.FuncFormalParameter;
 import Triangle.AbstractSyntaxTrees.Identifier;
-import Triangle.AbstractSyntaxTrees.LongIdentifier;
 import Triangle.AbstractSyntaxTrees.IfCommand;
 import Triangle.AbstractSyntaxTrees.IfExpression;
 import Triangle.AbstractSyntaxTrees.IntegerExpression;
@@ -230,25 +229,7 @@ public class Parser {
     }
     return I;
   }
-  
- // parseIdentifier parses an identifier, and constructs a leaf AST to
-// represent it.
-
-  LongIdentifier parseLongIdentifier() throws SyntaxError {
-    LongIdentifier LI = null;
-
-    if (currentToken.kind == Token.LONGIDENTIFIER) {
-      previousTokenPosition = currentToken.position;
-      String spelling = currentToken.spelling;
-      LI = new LongIdentifier(spelling, previousTokenPosition);
-      currentToken = lexicalAnalyser.scan();
-    } else {
-      LI = null;
-      syntacticError("long-identifier expected here", "");
-    }
-    return LI;
-  }
-  
+    
 
 // parseOperator parses an operator, and constructs a leaf AST to
 // represent it.
@@ -298,32 +279,17 @@ public class Parser {
 
     SourcePosition commandPos = new SourcePosition();
     start(commandPos);
-    System.out.println("Entró a singleCommand");
 
     switch (currentToken.kind) {
         
+    //AGREGADO: comando vacío skip
     case Token.SKIP:
       acceptIt();
       finish(commandPos);
       commandAST = new EmptyCommand(commandPos);
       break;
-      
-    case Token.LONGIDENTIFIER:
-      {
-        acceptIt();
-        LongIdentifier iAST = parseLongIdentifier();
-        if (currentToken.kind == Token.LPAREN) {
-          acceptIt();
-          ActualParameterSequence apsAST = parseActualParameterSequence();
-          accept(Token.RPAREN);
-          finish(commandPos);
-          commandAST = new CallCommand(iAST, apsAST, commandPos);
-        }
-      }
-        break; 
-      
-    case Token.IDENTIFIER:
-      {
+    
+    case Token.IDENTIFIER:{
         Identifier iAST = parseIdentifier();
         if (currentToken.kind == Token.LPAREN) {
           acceptIt();
@@ -333,16 +299,16 @@ public class Parser {
           commandAST = new CallCommand(iAST, apsAST, commandPos);
 
         } else {
-
           Vname vAST = parseRestOfVname(iAST);
           accept(Token.BECOMES);
           Expression eAST = parseExpression();
           finish(commandPos);
           commandAST = new AssignCommand(vAST, eAST, commandPos);
         }
-      }
-      break;
+    }
+    break;
       
+    //AGREGADO: COMANDO LET 
     case Token.LET:
       {
         acceptIt();        
@@ -352,9 +318,10 @@ public class Parser {
         accept(Token.END);
         finish(commandPos);
         commandAST = new LetCommand(dAST, cAST, commandPos);
-      }
-      break;
+    }
+    break;
       
+    //AGREGADO: COMANDO IF QUE SE ANIDA  
     case Token.IF:
         {
         acceptIt();
@@ -365,11 +332,13 @@ public class Parser {
         finish(commandPos);
         commandAST = new IfCommand(eAST,cAST,cAST2,commandPos); 
     }
-        break;
+    break;
         
+    //AGREGADO: COMANDO REPEAT con todos los casos incluídos    
     case Token.REPEAT:{
         acceptIt();
         switch (currentToken.kind) {
+            //Caso While
             case Token.WHILE:{
                 acceptIt();
                 WhileBody whileBody = parseWhileBody();
@@ -377,7 +346,8 @@ public class Parser {
                 commandAST = new RepeatCommand(whileBody, commandPos);
             }
             break;
-                
+             
+            //Caso Until
             case Token.UNTIL:{                
                 acceptIt();
                 UntilBody untilBody = parseUntilBody();
@@ -386,6 +356,7 @@ public class Parser {
             }
             break;
             
+            //Caso Do
             case Token.DO:{
                 acceptIt();
                 DoBody doBody = parseDoBody();
@@ -396,6 +367,7 @@ public class Parser {
             
             default:{
                 TimesBody tAST = parseTimesBody();
+                //Caso de Expression
                 if(tAST!=null){                    
                     commandAST = new RepeatCommand(tAST, commandPos);
                 }
@@ -405,17 +377,10 @@ public class Parser {
                 }                
             }
             break;
-                
-
-            /*
-            default:{
-                syntacticError("Found: \"%\", was expecting while, until, do or expression",
-        currentToken.spelling);
-            }
-            break;*/
         } 
     }
     break;
+    
     case Token.FOR:{
         acceptIt();
         ForBody forBody = parseForBody();
@@ -432,6 +397,7 @@ public class Parser {
     return commandAST;
 }
   
+  //AGREGADO: Parsea el resto del if, en caso de haber múltiples con PIPE o no
   Command parseRestoDelIf() throws SyntaxError {
       Command restoAST = null; //en caso de error sintáctico
       SourcePosition restoPos = new SourcePosition();
@@ -456,14 +422,14 @@ public class Parser {
           }
           break;
           default:
-              syntacticError("\"%\" cannot start a command",
+              syntacticError("\"%\" cannot start a if command",
         currentToken.spelling);
               break;
       }
-      return restoAST;
-      
+      return restoAST;  
   }
   
+  //AGREGADO: parsea el resto del While
   WhileBody parseWhileBody() throws SyntaxError{
       
      WhileBody wbAST = null;
@@ -479,6 +445,7 @@ public class Parser {
      return wbAST;
   }
   
+  //AGREGADO: parsea el resto del caso de repeat que utiliza el times
   TimesBody parseTimesBody() throws SyntaxError{
       TimesBody tAST = null;
       SourcePosition tPos = new SourcePosition();
@@ -493,6 +460,7 @@ public class Parser {
      return tAST;
   }
   
+  //AGREGADO: parsea el resto del Until
   UntilBody parseUntilBody() throws SyntaxError{
       
      UntilBody untilBodyAST = null;
@@ -508,6 +476,7 @@ public class Parser {
      return untilBodyAST;
   }
   
+  //AGREGADO: parsea el resto del Do
   DoBody parseDoBody() throws SyntaxError{
      DoBody doBodyAST = null;
      SourcePosition commandPos = new SourcePosition();
@@ -524,14 +493,13 @@ public class Parser {
                  
      Expression exprAST = parseExpression();
      accept(Token.END);
-     finish(commandPos);
-     
+     finish(commandPos);     
      doBodyAST = new DoBody(commandAST, exprAST, commandPos);
      
      return doBodyAST;
   }
   
-  
+  //AGREGADO: parsea el resto del For
   ForBody parseForBody() throws SyntaxError{
      ForBody forBodyAST = null;
      
@@ -550,25 +518,26 @@ public class Parser {
      
      Expression eAST3 = null;
      
-     //AGREGADO
-     
-     if(currentToken.kind == Token.WHILE){
-         accept(Token.WHILE);
-         eAST3 = parseExpression();             
-     }
-     else if(currentToken.kind == Token.UNTIL){
-         accept(Token.UNTIL);
-         eAST3 = parseExpression();
-     }
-     else if(currentToken.kind == Token.DO){
-         eAST3 = null;
-     }
-     else
-         syntacticError("found \"%\", while or until expected",
+     switch(currentToken.kind){
+         case Token.WHILE:{
+             acceptIt();
+             eAST3 = parseExpression();
+         }
+         break;
+         
+         case Token.UNTIL:{
+             acceptIt();
+             eAST3 = parseExpression();
+         }
+         break;
+         
+         default:
+             syntacticError("found \"%\", while, until or do expected",
         currentToken.spelling);
-     
+             break;
+         
+     }
      accept(Token.DO);
-     
      Command commandAST = parseCommand();
      accept(Token.END);
      finish(commandPos);
@@ -601,7 +570,6 @@ public class Parser {
         acceptIt();
         Declaration dAST = parseDeclaration();
         accept(Token.IN);
-        System.out.println("AQUÍ");
         Expression eAST = parseExpression();
         finish(expressionPos);
         expressionAST = new LetExpression(dAST, eAST, expressionPos);
@@ -685,20 +653,6 @@ public class Parser {
         accept(Token.RCURLY);
         finish(expressionPos);
         expressionAST = new RecordExpression(raAST, expressionPos);
-      }
-      break;
-
-    case Token.LONGIDENTIFIER:
-      {
-        LongIdentifier liAST= parseLongIdentifier();
-        if (currentToken.kind == Token.LPAREN) {
-          acceptIt();
-          ActualParameterSequence apsAST = parseActualParameterSequence();
-          accept(Token.RPAREN);
-          finish(expressionPos);
-          expressionAST = new CallExpression(liAST, apsAST, expressionPos);
-
-        }
       }
       break;
       
@@ -843,15 +797,12 @@ public class Parser {
           case Token.PROC:
           case Token.FUNC:
           case Token.TYPE:
-              System.out.println("aaaaaaaaa");
               declarationAST = parseSingleDeclaration();
               break;
           case Token.REC:
           {
-              System.out.println("1");
               acceptIt();
               Declaration pfAST = parseProcFuncs();
-              System.out.println("2");
               accept(Token.END);
               finish(declarationPos);
               declarationAST = new RecDeclaration(pfAST,declarationPos);
@@ -928,10 +879,7 @@ public class Parser {
 
       start(procFuncsPos);
       Declaration pfAST1 = parseProcFunc();
-      System.out.println("ab");
-      System.out.println("último "+currentToken.kind);
       accept(Token.PIPE);
-      System.out.println("cd");
       Declaration pfAST2 = parseProcFunc();
       procFuncsAST = new SequentialDeclaration(pfAST1, pfAST2, procFuncsPos);
  

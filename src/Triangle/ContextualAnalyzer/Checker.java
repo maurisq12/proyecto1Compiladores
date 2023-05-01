@@ -45,7 +45,6 @@ import Triangle.AbstractSyntaxTrees.FuncActualParameter;
 import Triangle.AbstractSyntaxTrees.FuncDeclaration;
 import Triangle.AbstractSyntaxTrees.FuncFormalParameter;
 import Triangle.AbstractSyntaxTrees.Identifier;
-import Triangle.AbstractSyntaxTrees.LongIdentifier;
 import Triangle.AbstractSyntaxTrees.IfCommand;
 import Triangle.AbstractSyntaxTrees.IfExpression;
 import Triangle.AbstractSyntaxTrees.IntTypeDenoter;
@@ -85,7 +84,6 @@ import Triangle.AbstractSyntaxTrees.VarDeclaration;
 import Triangle.AbstractSyntaxTrees.VarFormalParameter;
 import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
-import Triangle.AbstractSyntaxTrees.UntilCommand;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
 import Triangle.SyntacticAnalyzer.SourcePosition;
 import Triangle.AbstractSyntaxTrees.DoBody;
@@ -156,14 +154,6 @@ public final class Checker implements Visitor {
   public Object visitSequentialCommand(SequentialCommand ast, Object o) {
     ast.C1.visit(this, null);
     ast.C2.visit(this, null);
-    return null;
-  }
-  
-  public Object visitUntilCommand(UntilCommand ast, Object o) {
-    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-    if (! eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", ast.E.position);
-    ast.C.visit(this, null);
     return null;
   }
 
@@ -666,13 +656,6 @@ public final class Checker implements Visitor {
     Declaration binding = idTable.retrieve(I.spelling);
     if (binding != null)
       I.decl = binding;
-    return binding;
-  }
-  
-  public Object visitLongIdentifier(LongIdentifier LI, Object o) {
-    Declaration binding = idTable.retrieve(LI.spelling);
-    if (binding != null)
-      LI.decl = binding;
     return binding;
   }
 

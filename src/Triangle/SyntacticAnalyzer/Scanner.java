@@ -132,7 +132,7 @@ public final class Scanner {
       takeIt();
       if(currentChar =='.'){
           takeIt();
-          return Token.DOTS;}
+          return Token.DOTS;} //AGREGADO
       return Token.DOT;
 
     case ':':
@@ -181,11 +181,11 @@ public final class Scanner {
       
     case '|':
       takeIt();
-      return Token.PIPE;
+      return Token.PIPE;  //AGREGADO
         
     case '$':
       takeIt();
-      return Token.DOLLAR;
+      return Token.DOLLAR;  //AGREGADO
       
     case SourceFile.EOT:
       return Token.EOT;

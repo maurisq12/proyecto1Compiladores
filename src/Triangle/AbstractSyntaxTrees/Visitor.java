@@ -23,7 +23,6 @@ public interface Visitor {
   public abstract Object visitIfCommand(IfCommand ast, Object o);
   public abstract Object visitLetCommand(LetCommand ast, Object o);
   public abstract Object visitSequentialCommand(SequentialCommand ast, Object o);
-  public abstract Object visitUntilCommand(UntilCommand ast, Object o);
   public abstract Object visitWhileCommand(WhileCommand ast, Object o);
 
 
@@ -94,7 +93,6 @@ public interface Visitor {
   // Literals, Identifiers and Operators
   public abstract Object visitCharacterLiteral(CharacterLiteral ast, Object o);
   public abstract Object visitIdentifier(Identifier ast, Object o);
-  public abstract Object visitLongIdentifier(LongIdentifier ast, Object o);
   public abstract Object visitIntegerLiteral(IntegerLiteral ast, Object o);
   public abstract Object visitOperator(Operator ast, Object o);
 

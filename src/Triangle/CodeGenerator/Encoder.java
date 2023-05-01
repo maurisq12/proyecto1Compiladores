@@ -50,7 +50,6 @@ import Triangle.AbstractSyntaxTrees.FuncActualParameter;
 import Triangle.AbstractSyntaxTrees.FuncDeclaration;
 import Triangle.AbstractSyntaxTrees.FuncFormalParameter;
 import Triangle.AbstractSyntaxTrees.Identifier;
-import Triangle.AbstractSyntaxTrees.LongIdentifier;
 import Triangle.AbstractSyntaxTrees.IfCommand;
 import Triangle.AbstractSyntaxTrees.IfExpression;
 import Triangle.AbstractSyntaxTrees.IntTypeDenoter;
@@ -89,7 +88,6 @@ import Triangle.AbstractSyntaxTrees.VarFormalParameter;
 import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.AbstractSyntaxTrees.Vname;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
-import Triangle.AbstractSyntaxTrees.UntilCommand;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
 import Triangle.AbstractSyntaxTrees.DoBody;
 import Triangle.AbstractSyntaxTrees.WhileBody;
@@ -157,19 +155,7 @@ public final class Encoder implements Visitor {
     return null;
   }
   
-  public Object visitUntilCommand(UntilCommand ast, Object o) {
-    Frame frame = (Frame) o;
-    int jumpAddr, loopAddr;
 
-    jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    loopAddr = nextInstrAddr;
-    ast.C.visit(this, frame);
-    patch(jumpAddr, nextInstrAddr);
-    ast.E.visit(this, frame);
-    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
-    return null;
-  }
 
   public Object visitWhileCommand(WhileCommand ast, Object o) {
     Frame frame = (Frame) o;
@@ -664,29 +650,7 @@ public final class Encoder implements Visitor {
     }
     return null;
   }
-  
-  public Object visitLongIdentifier(LongIdentifier ast, Object o) {
-    Frame frame = (Frame) o;
-    if (ast.decl.entity instanceof KnownRoutine) {
-      ObjectAddress address = ((KnownRoutine) ast.decl.entity).address;
-      emit(Machine.CALLop, displayRegister(frame.level, address.level),
-	   Machine.CBr, address.displacement);
-    } else if (ast.decl.entity instanceof UnknownRoutine) {
-      ObjectAddress address = ((UnknownRoutine) ast.decl.entity).address;
-      emit(Machine.LOADop, Machine.closureSize, displayRegister(frame.level,
-           address.level), address.displacement);
-      emit(Machine.CALLIop, 0, 0, 0);
-    } else if (ast.decl.entity instanceof PrimitiveRoutine) {
-      int displacement = ((PrimitiveRoutine) ast.decl.entity).displacement;
-      if (displacement != Machine.idDisplacement)
-        emit(Machine.CALLop, Machine.SBr, Machine.PBr, displacement);
-    } else if (ast.decl.entity instanceof EqualityRoutine) { // "=" or "\="
-      int displacement = ((EqualityRoutine) ast.decl.entity).displacement;
-      emit(Machine.LOADLop, 0, 0, frame.size / 2);
-      emit(Machine.CALLop, Machine.SBr, Machine.PBr, displacement);
-    }
-    return null;
-  }
+
 
   public Object visitIntegerLiteral(IntegerLiteral ast, Object o) {
     return null;

@@ -13,6 +13,8 @@ import Triangle.AbstractSyntaxTrees.Program;
 import Triangle.SyntacticAnalyzer.Parser;
 import Triangle.ContextualAnalyzer.Checker;
 import Triangle.CodeGenerator.Encoder;
+import java.io.IOException;
+import Triangle.XMLGen.Writer;
 
 
 
@@ -39,7 +41,7 @@ public class IDECompiler {
      * @param sourceName Path to the source file.
      * @return True if compilation was succesful.
      */
-    public boolean compileProgram(String sourceName) {
+    public boolean compileProgram(String sourceName) throws IOException, Exception{
         System.out.println("********** " +
                            "Triangle Compiler (IDE-Triangle 1.0)" +
                            " **********");
@@ -52,6 +54,9 @@ public class IDECompiler {
         boolean success = false;
         
         rootAST = parser.parseProgram();
+        HTMLWriter htmlGen = new HTMLWriter();
+        htmlGen.ParseHtml2(sourceName);
+        htmlGen.createFile();
         if (report.numErrors == 0) {
             //System.out.println("Contextual Analysis ...");
             //Checker checker = new Checker(report);
@@ -68,8 +73,10 @@ public class IDECompiler {
             }
         }
 
-        if (success)
+        if (success){
             System.out.println("Compilation was successful.");
+            xmlGen = new Writer(sourceName);
+            xmlGen.write(rootAST);}
         else
             System.out.println("Compilation was unsuccessful.");
         
@@ -96,5 +103,6 @@ public class IDECompiler {
     // <editor-fold defaultstate="collapsed" desc=" Attributes ">
     private Program rootAST;        // The Root Abstract Syntax Tree.    
     private IDEReporter report;     // Our ErrorReporter class.
+    private Writer xmlGen;          // Para crear el XML
     // </editor-fold>
 }

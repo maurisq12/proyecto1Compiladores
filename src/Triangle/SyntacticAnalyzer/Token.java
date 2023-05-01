@@ -64,111 +64,109 @@ final class Token extends Object {
     INTLITERAL	= 0,
     CHARLITERAL	= 1,
     IDENTIFIER	= 2,
-    LONGIDENTIFIER=3,
-    OPERATOR	= 4,
+    OPERATOR	= 3,
 
     // reserved words - must be in alphabetical order...-
-    ARRAY		= 5,//se elimina begin
-    CONST		= 6,
-    DO			= 7,
-    ELSE		= 8,
-    END			= 9,
-    FOR                 = 10,
-    FROM                = 11,
-    FUNC		= 12,
-    IF			= 13,
-    IN			= 14,
-    LET			= 15,
-    OF			= 16,
-    PACKAGE             = 17,
-    PRIVATE             = 18,
-    PROC		= 19,
-    REC                 = 20,
-    RECORD		= 21,
-    REPEAT              = 22,
-    SELECT              = 23,
-    SKIP                = 24,
-    THEN		= 25,
-    TIMES               = 26,
-    TYPE		= 27,
-    UNTIL               = 28,
-    VAR			= 29,
-    WHEN                = 30,
-    WHILE		= 31,
+    ARRAY		= 4,
+    CONST		= 5, //se elimina begin
+    DO			= 6,
+    ELSE		= 7,
+    END			= 8,
+    FOR                 = 9,  //AGREGADA
+    FROM                = 10, //AGREGADA
+    FUNC		= 11,
+    IF			= 12,
+    IN			= 13,
+    LET			= 14,
+    OF			= 15,
+    PACKAGE             = 16, //AGREGADA
+    PRIVATE             = 17, //AGREGADA
+    PROC		= 18,
+    REC                 = 19, //AGREGADA
+    RECORD		= 20,
+    REPEAT              = 21, //AGREGADA
+    SELECT              = 22, //AGREGADA
+    SKIP                = 23, //AGREGADA
+    THEN		= 24,
+    TIMES               = 25, //AGREGADA
+    TYPE		= 26,
+    UNTIL               = 27, //AGREGADA
+    VAR			= 28,
+    WHEN                = 29, //AGREGADA
+    WHILE		= 30,
 
     // punctuation...
-    DOT			= 32,
-    COLON		= 33,
-    SEMICOLON	        = 34,
-    COMMA		= 35,
-    BECOMES		= 36,
-    IS			= 37,
-    PIPE                = 38,
-    DOLLAR              = 39,
-    DOTS                = 40,
+    DOT			= 31,
+    COLON		= 32,
+    SEMICOLON	        = 33,
+    COMMA		= 34,
+    BECOMES		= 35,
+    IS			= 36,
+    PIPE                = 37, //AGREGADO
+    DOLLAR              = 38, //AGREGADO
+    DOTS                = 39, //AGREGADO
 
     // brackets...
-    LPAREN		= 41,
-    RPAREN		= 42,
-    LBRACKET	        = 43,
-    RBRACKET	        = 44,
-    LCURLY		= 45,
-    RCURLY		= 46,
+    LPAREN		= 40,
+    RPAREN		= 41,
+    LBRACKET	        = 42,
+    RBRACKET	        = 43,
+    LCURLY		= 44,
+    RCURLY		= 45,
 
     // special tokens...
-    EOT			= 47,
-    ERROR		= 48;
+    EOT			= 46,
+    ERROR		= 47;
 
   private static String[] tokenTable = new String[] {
     "<int>",
     "<char>",
     "<identifier>",
-    "<long-identifier>",
     "<operator>",
     "array",
     "const",
     "do",
     "else",
     "end", 
-    "for", //10
-    "from",
+    "for", //AGREGADA
+    "from", //10  //AGREGADA
     "func",
     "if",
     "in",
     "let",
     "of",
-    "package",
-    "private",
+    "package", //AGREGADA
+    "private", //AGREGADA
     "proc",
-    "rec", //20
-    "record",
-    "repeat",
-    "select",
-    "skip",
+    "rec", //AGREGADA
+    "record", //20
+    "repeat", //AGREGADA
+    "select", //AGREGADA
+    "skip", //AGREGADA
     "then",
-    "times",
+    "times", //AGREGADA
     "type",
-    "until",
+    "until", //AGREGADA
     "var",
-    "when",//30
-    "while",
+    "when", //AGREGADA
+    "while", //30
     ".",
     ":",
     ";",
     ",",
     ":=",
     "~",
-    "|",
-    "$",
-    "..", //40
-    "(",
+    "|", //AGREGADO
+    "$", //AGREGADO
+    "..", //AGREGADO
+    "(", //40
     ")",
     "[",
     "]",
     "{",
     "}",
     "",
-    "<error>"  //48
+    "<error>"  //47
   };
 
   private final static int	firstReservedWord = Token.ARRAY,

@@ -62,10 +62,10 @@ public class HTMLWriter {
     }
     
     
-   void ParseHtml2(String code) throws IOException{
+   void ParseHtml21(String code) throws IOException{
     fileName = code;
     ArrayList<String> matrix = new ArrayList<String>(); // Create an ArrayList objec 
-    File file = new File("C:\\Users\\maurisq\\Desktop\\x100to.tri");
+    File file = new File(code);
     Scanner input = new Scanner(file); 
  
     int count = 0;
@@ -74,7 +74,7 @@ public class HTMLWriter {
         Scanner dos = new Scanner(linea);
         while(dos.hasNext()){
             matrix.add(dos.next());
-        }
+        }            
         matrix.add("\n");        
     }
 Boolean misma=false;
@@ -102,6 +102,48 @@ for (String line: matrix){
             htmlResult=htmlResult+"<br>";
 
         }
+   
+   void ParseHtml2(String code) throws IOException{
+    fileName = code;
+    ArrayList<String> matrix = new ArrayList<String>(); // Create an ArrayList objec 
+    File file = new File(code);
+    Scanner input = new Scanner(file); 
+ 
+    int count = 0;
+    while (input.hasNextLine()) {
+        String linea = input.nextLine();
+        ArrayList<String> ll = divisorTokens(linea);
+        for(String pol:ll){
+            matrix.add(pol);
+        }
+        
+        matrix.add("\n");        
+    }
+Boolean misma=false;
+for (String line: matrix){
+    
+                if(isNumber(line) && !misma){
+                    line="<font color='#0000cd'>"+line+" "+"</font>";
+                }else if(line.contains("!")){
+                    line="<p style=\"font-family: 'DejaVu Sans', monospace;\"><font color='#00b300'>"+line;
+                    misma=true;
+                }else if (line=="\n"){
+                    line=" "+"</font>";
+                    line+="<br>";
+                    misma=false;
+                }else if(line.contains("'") && !misma){
+                 line="<font color='#0000cd'>"+line+" "+"</font>";
+
+                }else if(tokens.contains(line) && !misma){
+                 line="<b>"+line+" "+"</b>";
+
+                }
+                htmlResult=htmlResult+line+" ";
+                
+            }
+            htmlResult=htmlResult+"<br>";
+
+        }
 
     
    
@@ -112,6 +154,32 @@ for (String line: matrix){
        writer.print(htmlResult);
        writer.close();
    }
+   
+   public static ArrayList<String> divisorTokens(String ent){
+        ArrayList<String> resultado = new ArrayList<String>();
+        
+        String temp = "";
+        for(char i=0; i < ent.length() ;i++){
+            if(ent.charAt(i)==' '){
+                resultado.add(temp);
+                temp="";
+                resultado.add("&nbsp");
+            }else
+            if(ent.charAt(i)=='\t'){
+                resultado.add(temp);
+                temp="";
+                resultado.add("&nbsp &nbsp &nbsp &nbsp");
+            }
+            else{
+                temp+=ent.charAt(i);
+            }
+            
+        }
+        resultado.add(temp);
+        
+        return resultado;
+    
+    }
    
   private static boolean isNumber(String str) { 
   try {  

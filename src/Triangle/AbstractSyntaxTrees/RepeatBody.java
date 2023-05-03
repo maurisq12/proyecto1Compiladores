@@ -6,10 +6,6 @@ public abstract class RepeatBody extends Declaration{
 
     public RepeatBody(SourcePosition thePosition) {
         super(thePosition);
-    }
-
-   
-
-   
+    } 
     
 }

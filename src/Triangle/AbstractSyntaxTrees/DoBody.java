@@ -2,7 +2,6 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
-
 public class DoBody extends RepeatBody{
     public Command C;
     public Expression E;

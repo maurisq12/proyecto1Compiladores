@@ -19,50 +19,9 @@ public class HTMLWriter {
     private String htmlResult= "";
     
     private String fileName;
+
     
-    
-    void ParseHtml(String code) throws IOException{
-    fileName = code;
-    List<String> lines = Files.readAllLines(Paths.get(code), StandardCharsets.ISO_8859_1);
-    ArrayList<String[]> matrix = new ArrayList<String[]>(); // Create an ArrayList object
-    String[] splited = {};
-
-        for (String line : lines){
-            if(line.contains("!")){
-                 splited = new String[]{line};
-            }else{
-              splited = line.split("(?<=\\D)(?=\\d)|(?=[!])|(?=[+])|(?=[-])|(?=[*])|(?=[=])|(?=[)])|(?<=[(])|(?=[(\\s+)])");
-            }
-            matrix.add(splited);
-        }
-        
-        
-        for (String[] line: matrix){
-            
-            for (int i = 0; i < line.length; i++){
-                if(isNumber(line[i])){
-                    line[i]="<font color='#0000cd'>"+line[i]+"</font>";
-                }else if(line[i].contains("!")){
-                    line[i]="<p style=\"font-family: 'DejaVu Sans', monospace;\"><font color='#00b300'>"+line[i]+"</font>";
-
-                }else if(line[i].contains("'")){
-                 line[i]="<font color='#0000cd'>"+line[i]+"</font>";
-
-                }else if(tokens.contains(line[i])){
-                 line[i]="<b>"+line[i]+"</b>";
-
-                }
-                htmlResult=htmlResult+line[i];
-                
-            }
-            htmlResult=htmlResult+"<br>";
-
-        }
-
-    }
-    
-    
-   void ParseHtml21(String code) throws IOException{
+   void ParseHtml(String code) throws IOException{
     fileName = code;
     ArrayList<String> matrix = new ArrayList<String>(); // Create an ArrayList objec 
     File file = new File(code);
@@ -108,7 +67,7 @@ for (String line: matrix){
     ArrayList<String> matrix = new ArrayList<String>(); // Create an ArrayList objec 
     File file = new File(code);
     Scanner input = new Scanner(file); 
- 
+
     int count = 0;
     while (input.hasNextLine()) {
         String linea = input.nextLine();
@@ -123,20 +82,22 @@ Boolean misma=false;
 for (String line: matrix){
     
                 if(isNumber(line) && !misma){
-                    line="<font color='#0000cd'>"+line+" "+"</font>";
+                    line="<span class = \"literal\">"+line+" "+"</span>";
                 }else if(line.contains("!")){
-                    line="<p style=\"font-family: 'DejaVu Sans', monospace;\"><font color='#00b300'>"+line;
+                    line="<span class = \"comentario\">"+line;
                     misma=true;
                 }else if (line=="\n"){
-                    line=" "+"</font>";
+                    line=" "+"</span>";
                     line+="<br>";
                     misma=false;
                 }else if(line.contains("'") && !misma){
-                 line="<font color='#0000cd'>"+line+" "+"</font>";
+                 line="<span class = \"literal\">"+line+" "+"</span>";
 
                 }else if(tokens.contains(line) && !misma){
-                 line="<b>"+line+" "+"</b>";
-
+                 line="<span class = \"reservada\">"+line+" "+"</span>";
+                 
+                }else if(!line.contains("&nbsp")){
+                    line="<span>"+line+" "+"</span>";
                 }
                 htmlResult=htmlResult+line+" ";
                 
@@ -151,6 +112,14 @@ for (String line: matrix){
     
    public void createFile () throws FileNotFoundException, UnsupportedEncodingException{
        PrintWriter writer = new PrintWriter(removeExtension(fileName)+".html", "UTF-8");
+        String encabezado = 
+             "<style> span {font-family:'FreeMono', monospace; font-size: 1em;}\n"
+             + ".reservada{font-weight: bold;}\n"
+             + ".literal{color: darkblue;}\n"
+             + ".identificador{color: black;}\n"
+             + ".comentario{color: green;}\n"
+             + "</style>";
+       writer.print(encabezado);
        writer.print(htmlResult);
        writer.close();
    }

@@ -69,6 +69,7 @@ import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
 import javax.swing.tree.DefaultMutableTreeNode;
+
 import Triangle.AbstractSyntaxTrees.DoBody;
 import Triangle.AbstractSyntaxTrees.WhileBody;
 import Triangle.AbstractSyntaxTrees.ForBody;
@@ -432,6 +433,7 @@ public class TreeVisitor implements Visitor {
         return(t);        
     }
     
+    //AGREGADO: 
     public DefaultMutableTreeNode createTernary(String caption, DefaultMutableTreeNode child1, AST child2, AST child3) {
         DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
         t.add((DefaultMutableTreeNode)child1);
@@ -460,6 +462,7 @@ public class TreeVisitor implements Visitor {
         return(t);             
     }
     
+    //AGREGADO:
     public DefaultMutableTreeNode createQuaternary(String caption, DefaultMutableTreeNode child1, AST child2, AST child3, AST child4) {
         DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
         t.add((DefaultMutableTreeNode)child1);
@@ -528,8 +531,7 @@ public class TreeVisitor implements Visitor {
             return createBinary("Proc Funcs ",aThis.declaration, aThis.procFunc1);
         }else{
             return createUnary("Proc Func", aThis.declaration);
-        }
-         
+        }         
     }
 
     

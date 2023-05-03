@@ -80,6 +80,7 @@ import Triangle.AbstractSyntaxTrees.VarDeclaration;
 import Triangle.AbstractSyntaxTrees.VarFormalParameter;
 import Triangle.AbstractSyntaxTrees.Vname;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
+//AGREGADAS
 import Triangle.AbstractSyntaxTrees.DoBody;
 import Triangle.AbstractSyntaxTrees.WhileBody;
 import Triangle.AbstractSyntaxTrees.ForBody;
@@ -374,7 +375,7 @@ public class Parser {
                 else{
                     syntacticError("Found: \"%\", was expecting while, until, do or expression",
         currentToken.spelling);
-                }                
+            }                
             }
             break;
         } 
@@ -422,7 +423,7 @@ public class Parser {
           }
           break;
           default:
-              syntacticError("\"%\" cannot start a if command",
+              syntacticError("\"%\" cannot start an if command",
         currentToken.spelling);
               break;
       }
@@ -483,18 +484,23 @@ public class Parser {
      start(commandPos);
      Command commandAST = parseCommand();
      
-     if(currentToken.kind == Token.WHILE)
-         accept(Token.WHILE);
-     else if(currentToken.kind == Token.UNTIL)
-         accept(Token.UNTIL);
-     else
-         syntacticError("found \"%\", while or until expected",
+     switch(currentToken.kind){
+         case Token.WHILE:             
+         case Token.UNTIL:{
+             acceptIt();
+             Expression exprAST = parseExpression();
+             accept(Token.END);
+             finish(commandPos);     
+             doBodyAST = new DoBody(commandAST, exprAST, commandPos);             
+         }
+         break;             
+         
+         default:
+             syntacticError("found \"%\", while or until expected",
         currentToken.spelling);
-                 
-     Expression exprAST = parseExpression();
-     accept(Token.END);
-     finish(commandPos);     
-     doBodyAST = new DoBody(commandAST, exprAST, commandPos);
+             break;             
+     }
+     
      
      return doBodyAST;
   }
@@ -506,16 +512,11 @@ public class Parser {
      SourcePosition commandPos = new SourcePosition();
      start(commandPos);
      
-     Identifier iAST = parseIdentifier();
-     
-     accept(Token.BECOMES);
-     
-     Expression eAST1 = parseExpression();
-     
-     accept(Token.DOTS);
-     
-     Expression eAST2 = parseExpression();
-     
+     Identifier iAST = parseIdentifier();     
+     accept(Token.BECOMES);     
+     Expression eAST1 = parseExpression();     
+     accept(Token.DOTS);     
+     Expression eAST2 = parseExpression();     
      Expression eAST3 = null;
      
      switch(currentToken.kind){
@@ -530,6 +531,9 @@ public class Parser {
              eAST3 = parseExpression();
          }
          break;
+         
+         case Token.DO:
+             break;
          
          default:
              syntacticError("found \"%\", while, until or do expected",
@@ -776,16 +780,17 @@ public class Parser {
     Declaration declarationAST = null; // in case there's a syntactic error
     SourcePosition declarationPos = new SourcePosition();
     start(declarationPos);
-    declarationAST = parseCompoundDeclaration();
+    declarationAST = parseCompoundDeclaration(); //AGREGADO: Se modifica para que ahora parsee compound-Declaration
     while (currentToken.kind == Token.SEMICOLON) {
       acceptIt();
-      Declaration d2AST = parseCompoundDeclaration();
+      Declaration d2AST = parseCompoundDeclaration(); //AGREGADO: Se modifica para que ahora parsee compound-Declaration
       finish(declarationPos);
       declarationAST = new SequentialDeclaration(declarationAST, d2AST, declarationPos);
     }
     return declarationAST;
   }
   
+  //AGREGADO: función que parsea un compound-Declaration
   Declaration parseCompoundDeclaration() throws SyntaxError {
       Declaration declarationAST = null; // in case there's a syntactic error
       SourcePosition declarationPos = new SourcePosition();
@@ -805,7 +810,7 @@ public class Parser {
               Declaration pfAST = parseProcFuncs();
               accept(Token.END);
               finish(declarationPos);
-              declarationAST = new RecDeclaration(pfAST,declarationPos);
+              declarationAST = new RecDeclaration(pfAST,declarationPos); //nueva forma de árbol
           }
           break;
           case Token.PRIVATE:{
@@ -815,17 +820,18 @@ public class Parser {
               Declaration dAST2 = parseDeclaration();
               accept(Token.END);
               finish(declarationPos);
-              declarationAST = new PrivateDeclaration(dAST,dAST2,declarationPos);
+              declarationAST = new PrivateDeclaration(dAST,dAST2,declarationPos); //nueva forma de árbol
           }
           break;
           default:
-              syntacticError("\"%\" cannot start a compund declaration",
+              syntacticError("\"%\" cannot start a compund declaration", //nueva forma de error
         currentToken.spelling);
           break;
       }
       return declarationAST;
   }
   
+  //AGREGADO: función que parsea ProcFunc
   Declaration parseProcFunc () throws SyntaxError{
       Declaration propFuncAST = null; // in case there's a syntactic error
       SourcePosition propFuncPos = new SourcePosition();
@@ -858,12 +864,12 @@ public class Parser {
             Expression eAST = parseExpression();
             finish(propFuncPos);
             propFuncAST = new FuncDeclaration(iAST, fpsAST, tAST, eAST,
-              propFuncPos);
+              propFuncPos); //nueva forma de árbol
           }
           break;
          
         default:{
-            syntacticError("\"%\" cannot start a Proc-func",
+            syntacticError("\"%\" cannot start a Proc-func", //nueva forma de error
             currentToken.spelling);
               break;  
         }
@@ -871,7 +877,7 @@ public class Parser {
     return propFuncAST;
   }
     
-  
+  //AGREGADO: parsea la secuencia de proc-funcs que pueden ser declaradas, miínimo dos
   Declaration parseProcFuncs() throws SyntaxError {
       Declaration procFuncsAST = null; // in case there's a syntactic error
 
@@ -892,6 +898,7 @@ public class Parser {
       return procFuncsAST;
   }
 
+  //AGREGADO: se modificaron algunas reglas dentro de la función
   Declaration parseSingleDeclaration() throws SyntaxError {
     Declaration declarationAST = null; // in case there's a syntactic error
 
@@ -919,8 +926,8 @@ public class Parser {
         FormalParameterSequence fpsAST = parseFormalParameterSequence();
         accept(Token.RPAREN);
         accept(Token.IS);
-        Command cAST = parseCommand();
-        accept(Token.END);
+        Command cAST = parseCommand(); //se pasa a command
+        accept(Token.END); //se agrega el end
         finish(declarationPos);
         declarationAST = new ProcDeclaration(iAST, fpsAST, cAST, declarationPos);
       }
@@ -966,7 +973,7 @@ public class Parser {
                 acceptIt();
                 Expression exp = parseExpression();
                 finish(declarationPos);
-                declarationAST = new VarInit(iAST, exp, declarationPos);
+                declarationAST = new VarInit(iAST, exp, declarationPos); //caso de la variable inicializada
             }
             break;
          
@@ -979,7 +986,7 @@ public class Parser {
             }
             break;
             default:
-                syntacticError("Found \"%\" expected init or colon",
+                syntacticError("Found \"%\" expected becomes or colon",
         currentToken.spelling);
                 break;
         }

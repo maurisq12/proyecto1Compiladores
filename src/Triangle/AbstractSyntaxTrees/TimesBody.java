@@ -14,6 +14,6 @@ public class TimesBody extends RepeatBody{
     
     @Override
     public Object visit(Visitor v, Object o) {
-        return v.visitTimesBody(this, o); //To change body of generated methods, choose Tools | Templates.
+        return v.visitTimesBody(this, o);
     }
 }

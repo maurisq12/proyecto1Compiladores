@@ -55,7 +55,7 @@ public class IDECompiler {
         
         rootAST = parser.parseProgram();
         HTMLWriter htmlGen = new HTMLWriter();
-        htmlGen.ParseHtml2(sourceName);
+        htmlGen.ParseHtml(sourceName);
         htmlGen.createFile();
         if (report.numErrors == 0) {
             //System.out.println("Contextual Analysis ...");
